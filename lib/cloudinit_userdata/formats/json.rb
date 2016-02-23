@@ -8,8 +8,8 @@ module CloudInit
       MIMETYPES = %w(application/json).freeze
 
       def validate
-        JSON.parse(raw)
-      rescue JSON::ParserError => e
+        ::JSON.parse(raw)
+      rescue ::JSON::ParserError => e
         raise ParseError, "Contains invalid JSON: #{e.message.sub(/^(\d+): /, '')}"
       end
 
