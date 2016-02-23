@@ -11,6 +11,7 @@ module CloudInit
 
       def call
         case
+        when userdata.empty? then return
         when ::CloudInit::Userdata::PREFIXES.none? { |prefix| value.start_with?(prefix) }
           raise InvalidUserdataType, 'Unrecognized userdata format'
         when userdata.script? then validate_script

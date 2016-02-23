@@ -9,7 +9,5 @@ Documentation:
 LineLength:
   Enabled: false
 
-Style/PredicateName:
-  NamePrefix:
-    - is_
-    - have_
+Metrics/AbcSize:
+  Max: 16

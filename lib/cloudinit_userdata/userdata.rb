@@ -4,7 +4,9 @@ require 'cloudinit_userdata/validator'
 
 module CloudInit
   class Userdata
+    BLANK_REGEXP = /\A[[:space:]]*\z/
     GZIP_PREFIX = "\x1F\x8B".b.freeze
+
     SHEBANG = '#!'.freeze
     CLOUD_CONFIG_PREFIX = "#cloud-config\n".freeze
     JSON_PREFIXES = %w([ {).freeze
@@ -29,6 +31,10 @@ module CloudInit
 
     def json?
       JSON_PREFIXES.include?(to_s(:human)[0])
+    end
+
+    def empty?
+      raw.nil? || !BLANK_REGEXP.match(to_s(:human)).nil?
     end
 
     def gzipped?
