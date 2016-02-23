@@ -11,25 +11,52 @@ Usage
 ```ruby
 require 'cloudinit_userdata'
 
-userdata = CloudInit::Userdata.new <<-USERDATA.strip
+userdata = CloudInit::Userdata.parse <<-USERDATA.strip
   #!/bin/bash
 
   echo "Hello world!"
 USERDATA
 
-userdata.script? # true
-userdata.cloud_config? # false
-userdata.json? # false
+userdata.class # CloudInit::Userdata::ShellScript
 userdata.valid? # true
 ```
 
-Understand userdata scripts (begin with `#!`), JSON (used by CoreOS/ignition),
-and all of the [core CloudInit formats](http://cloudinit.readthedocs.org/en/latest/topics/format.html).
+Currently understands all of the
+[core CloudInit formats](http://cloudinit.readthedocs.org/en/latest/topics/format.html).
+Mime Multipart and gzipped userdata are also supported.
+
+An adapter is also included for JSON userdata (used by CoreOS/ignition), but it
+is not loaded by default, since it is not part of the original implementation.
+To include it, do the following somewhere:
+
+```
+require 'cloudinit_userdata/formats/json'
+CloudInit::Userdata.register_format(CloudInit::Userdata::JSON)
+```
+
+Custom Adapters
+---------------
+
+You can implement formatters for your custom types of userdata. Formatters
+should inherit from `CloudInit::Userdata`, and are expected to implement the
+`.match?` method at minimum.
+
+Formatters may also implement `#validate`, which will be called automatically
+by `CloudInit::Userdata#valid?`.
+
+Formatters may also implement `.mimetypes` and return an array of mimetype
+strings that will be recognized for Mime Multipart userdata.
+
+Finally, custom formatters must be registered with this library using the
+`CloudInit::Userdata.register_format(<your format class>)`.
 
 Known Limitations
 -----------------
 
-* Currently, this library does not support [mime-multi part files](http://cloudinit.readthedocs.org/en/latest/topics/format.html#mime-multi-part-archive). We plan to eventually support this feature, but it is currently low priority.
+* This library does not validate the semantics of userdata, since the only way
+  to do that accurately is to actually run the userdata on a machine, and we
+  obviously can't do that. Rather, this library attempts to provide some basic
+  intelligence and parse-checking around userdata formats.
 
 Contributing
 ------------

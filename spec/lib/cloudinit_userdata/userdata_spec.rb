@@ -1,4 +1,7 @@
 require 'spec_helper'
+require 'zlib'
+require 'stringio'
+require 'pp'
 
 RSpec.describe CloudInit::Userdata do
   let(:userdata) { nil }
@@ -16,69 +19,73 @@ RSpec.describe CloudInit::Userdata do
       some_key: some_value
     CLOUD_CONFIG
   end
-  let(:json) do
-    <<-JSON.strip
-      { "some_key": "some_value" }
-    JSON
+  let(:cloud_boothook) do
+    <<-CLOUD_BOOTHOOK.strip
+      #cloud-boothook
+
+      Some cloud boothook stuff.
+    CLOUD_BOOTHOOK
   end
+  let(:gzipped) do
+    output = StringIO.new
+    output.set_encoding 'BINARY'
+    gz = Zlib::GzipWriter.new(output, Zlib::DEFAULT_COMPRESSION, Zlib::DEFAULT_STRATEGY)
+    gz.write(script)
+    gz.close
+    output.rewind
+    output.string
+  end
+  let(:mime_multipart) do
+    <<-MIME.strip
+      From nobody Tue Feb 23 00:00:00 2016
+      Content-Type: multipart/mixed; boundary="===============7512168895100174639=="
+      MIME-Version: 1.0
+
+      --===============7512168895100174639==
+      MIME-Version: 1.0
+      Content-Type: text/x-shellscript; charset="us-ascii"
+      Content-Transfer-Encoding: 7bit
+      Content-Disposition: attachment; filename="script.sh"
+
+      #!/bin//bash
+
+      echo "Hello!!!"
+
+      --===============7512168895100174639==
+      MIME-Version: 1.0
+      Content-Type: text/cloud-boothook; charset="us-ascii"
+      Content-Transfer-Encoding: 7bit
+      Content-Disposition: attachment; filename="cloud_boothook.txt"
+
+      Hello!!!
+
+      --===============7512168895100174639==--
+    MIME
+  end
+  let(:blank) { '' }
+  let(:nil) { nil }
   let(:invalid) { 'This is not valid userdata' }
-  subject { CloudInit::Userdata.new(userdata) }
+  subject { CloudInit::Userdata.parse(userdata) }
 
-  describe '#script?' do
-    context 'with a script' do
-      let(:userdata) { script }
-      it { is_expected.to be_a_script }
+  describe '.parse' do
+    {
+      script: CloudInit::Userdata::ShellScript,
+      cloud_config: CloudInit::Userdata::CloudConfig,
+      cloud_boothook: CloudInit::Userdata::CloudBoothook,
+      gzipped: CloudInit::Userdata::Gzipped,
+      mime_multipart: CloudInit::Userdata::MimeMultipart,
+      blank: CloudInit::Userdata::Blank,
+      nil: CloudInit::Userdata::Blank
+    }.each_pair do |value, klass|
+      context "with valid userdata (#{klass})" do
+        let(:userdata) { send(value) }
+        it { is_expected.to be_a(klass) }
+      end
     end
 
-    context 'with a non-script' do
-      let(:userdata) { cloud_config }
-      it { is_expected.not_to be_a_script }
-    end
-  end
-
-  describe '#cloud_config?' do
-    context 'with cloud config' do
-      let(:userdata) { cloud_config }
-      it { is_expected.to be_cloud_config }
-    end
-
-    context 'with non-cloud config' do
-      let(:userdata) { script }
-      it { is_expected.not_to be_cloud_config }
-    end
-  end
-
-  describe '#json?' do
-    context 'with JSON' do
-      let(:userdata) { json }
-      it { is_expected.to be_json }
-    end
-
-    context 'with non-JSON' do
-      let(:userdata) { cloud_config }
-      it { is_expected.not_to be_json }
-    end
-  end
-
-  describe '#valid?' do
-    context 'valid script' do
-      let(:userdata) { script }
-      it { is_expected.to be_valid }
-    end
-
-    context 'valid cloud config' do
-      let(:userdata) { cloud_config }
-      it { is_expected.to be_valid }
-    end
-
-    context 'valid JSON' do
-      let(:userdata) { json }
-      it { is_expected.to be_valid }
-    end
-
-    context 'invalid userdata' do
+    context 'with invalid userdata' do
       let(:userdata) { invalid }
-      it { is_expected.not_to be_valid }
+      it { expect { subject }.to raise_error(CloudInit::Userdata::InvalidFormat) }
     end
   end
 end

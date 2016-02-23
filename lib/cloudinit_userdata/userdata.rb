@@ -1,48 +1,22 @@
-require 'zlib'
-require 'stringio'
-require 'cloudinit_userdata/validator'
+require 'cloudinit_userdata/errors'
 
 module CloudInit
   class Userdata
-    BLANK_REGEXP = /\A[[:space:]]*\z/
-    GZIP_PREFIX = "\x1F\x8B".b.freeze
-
-    SHEBANG = '#!'.freeze
-    CLOUD_CONFIG_PREFIX = "#cloud-config\n".freeze
-    JSON_PREFIXES = %w([ {).freeze
-    PREFIXES = JSON_PREFIXES + [
-      SHEBANG, CLOUD_CONFIG_PREFIX,
-      '#include', '#upstart-job', '#cloud-boothook', '#part-handler'
-    ].freeze
+    @formats = []
 
     attr_accessor :raw
+    alias to_s raw
 
     def initialize(raw)
       self.raw = raw
     end
 
-    def script?
-      to_s(:human).start_with?(SHEBANG)
-    end
-
-    def cloud_config?
-      to_s(:human).start_with?(CLOUD_CONFIG_PREFIX)
-    end
-
-    def json?
-      JSON_PREFIXES.include?(to_s(:human)[0])
-    end
-
     def empty?
-      raw.nil? || !BLANK_REGEXP.match(to_s(:human)).nil?
+      false
     end
 
-    def gzipped?
-      !raw.nil? && raw[0..1] == GZIP_PREFIX
-    end
-
-    def decompressed
-      Zlib::GzipReader.new(StringIO.new(raw)).read
+    def validate
+      # noop
     end
 
     def valid?
@@ -52,16 +26,26 @@ module CloudInit
       false
     end
 
-    def validate
-      Validator.new(self).call
+    def self.match?(_value)
+      raise NotImplementedError
     end
 
-    def to_s(format = nil)
-      case format
-      when nil, :raw then raw
-      when :human, :decompressed
-        gzipped? ? decompressed : raw
-      end
+    def self.mimetypes
+      []
+    end
+
+    def self.parse(value)
+      formatter = @formats.find { |f| f.match?(value) }
+      raise InvalidFormat, 'Unrecognized userdata format' unless formatter
+      formatter.new(value)
+    end
+
+    def self.register_format(klass)
+      @formats << klass unless @formats.include?(klass)
+    end
+
+    class << self
+      attr_reader :formats
     end
   end
 end
