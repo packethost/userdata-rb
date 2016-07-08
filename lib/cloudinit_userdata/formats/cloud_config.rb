@@ -8,7 +8,7 @@ module CloudInit
       MIMETYPES = %w(text/cloud-config).freeze
 
       def validate
-        YAML.safe_load(raw)
+        YAML.safe_load(raw, [Date])
       rescue Psych::SyntaxError => e
         raise ParseError, "Contains invalid YAML at line #{e.line}, column #{e.column}: #{e.problem} #{e.context}"
       rescue Psych::DisallowedClass
