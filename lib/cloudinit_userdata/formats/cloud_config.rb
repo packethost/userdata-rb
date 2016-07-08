@@ -11,6 +11,8 @@ module CloudInit
         YAML.safe_load(raw)
       rescue Psych::SyntaxError => e
         raise ParseError, "Contains invalid YAML at line #{e.line}, column #{e.column}: #{e.problem} #{e.context}"
+      rescue Psych::DisallowedClass
+        raise ParseError, 'Contains invalid YAML: Disallowed Class'
       end
 
       def self.match?(value)
