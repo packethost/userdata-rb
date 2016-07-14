@@ -34,6 +34,9 @@ CloudInit::Userdata.register_format(CloudInit::Userdata::MimeMultipart)
 require 'cloudinit_userdata/formats/part_handler'
 CloudInit::Userdata.register_format(CloudInit::Userdata::PartHandler)
 
+require 'cloudinit_userdata/formats/power_shell'
+CloudInit::Userdata.register_format(CloudInit::Userdata::PowerShell)
+
 require 'cloudinit_userdata/formats/shell_script'
 CloudInit::Userdata.register_format(CloudInit::Userdata::ShellScript)
 

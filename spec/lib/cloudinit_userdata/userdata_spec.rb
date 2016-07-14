@@ -62,6 +62,20 @@ RSpec.describe CloudInit::Userdata do
       --===============7512168895100174639==--
     MIME
   end
+  let(:power_shell) do
+    <<-POWER_SHELL.strip
+      #ps1
+
+      Write-Host "Hello, World!"
+    POWER_SHELL
+  end
+  let(:power_shell_x_86) do
+    <<-POWER_SHELL_X_86.strip
+      #ps1_x86
+
+      Write-Host "Hello, World!"
+    POWER_SHELL_X_86
+  end
   let(:blank) { '' }
   let(:nil) { nil }
   let(:invalid) { 'This is not valid userdata' }
@@ -74,6 +88,8 @@ RSpec.describe CloudInit::Userdata do
       cloud_boothook: CloudInit::Userdata::CloudBoothook,
       gzipped: CloudInit::Userdata::Gzipped,
       mime_multipart: CloudInit::Userdata::MimeMultipart,
+      power_shell: CloudInit::Userdata::PowerShell,
+      power_shell_x_86: CloudInit::Userdata::PowerShell,
       blank: CloudInit::Userdata::Blank,
       nil: CloudInit::Userdata::Blank
     }.each_pair do |value, klass|
