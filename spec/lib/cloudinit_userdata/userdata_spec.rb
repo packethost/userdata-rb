@@ -76,6 +76,17 @@ RSpec.describe CloudInit::Userdata do
       Write-Host "Hello, World!"
     POWER_SHELL_X_86
   end
+  let(:jinja_template) do
+    <<~JINJA_TEMPLATE
+      ## template: jinja
+      #cloud-config
+      puppet:
+      conf:
+        agent:
+          server: "puppetmaster.local"
+          certname: "{{ v1.instance_id }}.%f"
+    JINJA_TEMPLATE
+  end
   let(:blank) { '' }
   let(:nil) { nil }
   let(:invalid) { 'This is not valid userdata' }
@@ -90,12 +101,17 @@ RSpec.describe CloudInit::Userdata do
       mime_multipart: CloudInit::Userdata::MimeMultipart,
       power_shell: CloudInit::Userdata::PowerShell,
       power_shell_x_86: CloudInit::Userdata::PowerShell,
+      jinja_template: CloudInit::Userdata::JinjaTemplate,
       blank: CloudInit::Userdata::Blank,
       nil: CloudInit::Userdata::Blank
     }.each_pair do |value, klass|
       context "with valid userdata (#{klass})" do
         let(:userdata) { send(value) }
         it { is_expected.to be_a(klass) }
+      end
+      context "with userdata validated (#{klass})" do
+        let(:userdata) { send(value) }
+        it { expect(subject.valid?).to be_truthy }
       end
     end
 

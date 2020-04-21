@@ -42,3 +42,6 @@ CloudInit::Userdata.register_format(CloudInit::Userdata::ShellScript)
 
 require 'cloudinit_userdata/formats/upstart_job'
 CloudInit::Userdata.register_format(CloudInit::Userdata::UpstartJob)
+
+require 'cloudinit_userdata/formats/jinja_template'
+CloudInit::Userdata.register_format(CloudInit::Userdata::JinjaTemplate)
