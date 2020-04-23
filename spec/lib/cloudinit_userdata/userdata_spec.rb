@@ -1,7 +1,7 @@
-require 'spec_helper'
-require 'zlib'
-require 'stringio'
-require 'pp'
+require "spec_helper"
+require "zlib"
+require "stringio"
+require "pp"
 
 RSpec.describe CloudInit::Userdata do
   let(:userdata) { nil }
@@ -28,7 +28,7 @@ RSpec.describe CloudInit::Userdata do
   end
   let(:gzipped) do
     output = StringIO.new
-    output.set_encoding 'BINARY'
+    output.set_encoding "BINARY"
     gz = Zlib::GzipWriter.new(output, Zlib::DEFAULT_COMPRESSION, Zlib::DEFAULT_STRATEGY)
     gz.write(script)
     gz.close
@@ -87,12 +87,12 @@ RSpec.describe CloudInit::Userdata do
           certname: "{{ v1.instance_id }}.%f"
     JINJA_TEMPLATE
   end
-  let(:blank) { '' }
+  let(:blank) { "" }
   let(:nil) { nil }
-  let(:invalid) { 'This is not valid userdata' }
+  let(:invalid) { "This is not valid userdata" }
   subject { CloudInit::Userdata.parse(userdata) }
 
-  describe '.parse' do
+  describe ".parse" do
     {
       script: CloudInit::Userdata::ShellScript,
       cloud_config: CloudInit::Userdata::CloudConfig,
@@ -103,7 +103,7 @@ RSpec.describe CloudInit::Userdata do
       power_shell_x_86: CloudInit::Userdata::PowerShell,
       jinja_template: CloudInit::Userdata::JinjaTemplate,
       blank: CloudInit::Userdata::Blank,
-      nil: CloudInit::Userdata::Blank
+      nil: CloudInit::Userdata::Blank,
     }.each_pair do |value, klass|
       context "with valid userdata (#{klass})" do
         let(:userdata) { send(value) }
@@ -115,7 +115,7 @@ RSpec.describe CloudInit::Userdata do
       end
     end
 
-    context 'with invalid userdata' do
+    context "with invalid userdata" do
       let(:userdata) { invalid }
       it { expect { subject }.to raise_error(CloudInit::Userdata::InvalidFormat) }
     end

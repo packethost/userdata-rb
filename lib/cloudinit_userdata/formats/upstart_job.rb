@@ -1,7 +1,7 @@
 module CloudInit
   class Userdata
     class UpstartJob < Userdata
-      PREFIX = '#upstart-job'.freeze
+      PREFIX = "#upstart-job".freeze
       MIMETYPES = %w(text/upstart-job).freeze
 
       def self.match?(value)

@@ -1,5 +1,5 @@
-require 'json'
-require 'cloudinit_userdata/errors'
+require "json"
+require "cloudinit_userdata/errors"
 
 module CloudInit
   class Userdata
@@ -10,7 +10,7 @@ module CloudInit
       def validate
         ::JSON.parse(raw)
       rescue ::JSON::ParserError => e
-        raise ParseError, "Contains invalid JSON: #{e.message.sub(/^(\d+): /, '')}"
+        raise ParseError, "Contains invalid JSON: #{e.message.sub(/^(\d+): /, "")}"
       end
 
       def self.match?(value)

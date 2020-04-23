@@ -1,4 +1,4 @@
-require 'cloudinit_userdata/errors'
+require "cloudinit_userdata/errors"
 
 module CloudInit
   class Userdata
@@ -36,7 +36,7 @@ module CloudInit
 
     def self.parse(value)
       formatter = @formats.find { |f| f.match?(value) }
-      raise InvalidFormat, 'Unrecognized userdata format' unless formatter
+      raise InvalidFormat, "Unrecognized userdata format" unless formatter
       formatter.new(value)
     end
 

@@ -1,11 +1,11 @@
-require 'simplecov'
+require "simplecov"
 
-ENV['COVERAGE'] && SimpleCov.start
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+ENV["COVERAGE"] && SimpleCov.start
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
-require 'rspec'
-require 'cloudinit_userdata'
+require "rspec"
+require "cloudinit_userdata"
 
 # Requires supporting files with custom matchers and macros, etc,
 # in ./support/ and its subdirectories.
@@ -49,7 +49,7 @@ RSpec.configure do |config|
     # Use the documentation formatter for detailed output,
     # unless a formatter has already been configured
     # (e.g. via a command-line flag).
-    config.default_formatter = 'doc'
+    config.default_formatter = "doc"
   end
 
   # Print the 10 slowest examples and example groups at the

@@ -3,11 +3,35 @@ AllCops:
     - '**/Rakefile'
     - lib/**/*
 
-Documentation:
+Style/Documentation:
   Enabled: false
 
-LineLength:
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 120
+
+Style/GuardClause:
+  Enabled: false
+
+Style/IfUnlessModifier: 
   Enabled: false
 
 Metrics/AbcSize:
   Max: 16
+
+Layout:
+  Enabled: false
+
+Style:
+  Enabled: false
+
+Lint/RaiseException:
+  Enabled: true
+
+Lint/StructNewOverride:
+  Enabled: true
+
+Lint/SuppressedException:
+  Enabled: false

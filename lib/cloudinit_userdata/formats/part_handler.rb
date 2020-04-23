@@ -1,7 +1,7 @@
 module CloudInit
   class Userdata
     class PartHandler < Userdata
-      PREFIX = '#part-handler'.freeze
+      PREFIX = "#part-handler".freeze
       MIMETYPES = %w(text/part-handler).freeze
 
       def self.match?(value)
