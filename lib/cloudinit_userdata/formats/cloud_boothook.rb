@@ -1,7 +1,7 @@
 module CloudInit
   class Userdata
     class CloudBoothook < Userdata
-      PREFIX = '#cloud-boothook'.freeze
+      PREFIX = "#cloud-boothook".freeze
       MIMETYPES = %w(text/cloud-boothook).freeze
 
       def self.match?(value)

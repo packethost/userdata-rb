@@ -2,13 +2,12 @@ require "cloudinit_userdata/errors"
 
 module CloudInit
   class Userdata
-    class PowerShell < Userdata
-      PREFIX = "#ps1".freeze
-      POWER_SHELL_REGEXP = /^#ps1\S*\n/
-      MIMETYPES = %w(text/power-shell).freeze
+    class JinjaTemplate < Userdata
+      PREFIX = "## template: jinja\n"
+      MIMETYPES = %w(text/jinja).freeze
 
       def validate
-        return if raw =~ POWER_SHELL_REGEXP
+        return if raw.start_with?(PREFIX)
         raise InvalidUserdata, "Script is not properly formatted to call an executable on line 1"
       end
 

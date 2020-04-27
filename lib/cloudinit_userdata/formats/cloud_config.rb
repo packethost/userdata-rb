@@ -1,5 +1,5 @@
-require 'yaml'
-require 'cloudinit_userdata/errors'
+require "yaml"
+require "cloudinit_userdata/errors"
 
 module CloudInit
   class Userdata
@@ -12,7 +12,7 @@ module CloudInit
       rescue Psych::SyntaxError => e
         raise ParseError, "Contains invalid YAML at line #{e.line}, column #{e.column}: #{e.problem} #{e.context}"
       rescue Psych::DisallowedClass
-        raise ParseError, 'Contains invalid YAML: Disallowed Class'
+        raise ParseError, "Contains invalid YAML: Disallowed Class"
       end
 
       def self.match?(value)

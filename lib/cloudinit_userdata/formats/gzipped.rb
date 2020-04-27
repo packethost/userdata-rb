@@ -1,5 +1,5 @@
-require 'zlib'
-require 'stringio'
+require "zlib"
+require "stringio"
 
 module CloudInit
   class Userdata

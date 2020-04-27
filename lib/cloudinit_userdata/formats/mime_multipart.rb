@@ -1,10 +1,10 @@
-require 'mail'
-require 'cloudinit_userdata/errors'
+require "mail"
+require "cloudinit_userdata/errors"
 
 module CloudInit
   class Userdata
     class MimeMultipart < Userdata
-      MATCH_STRING = 'Content-Type: multipart/mixed'.freeze
+      MATCH_STRING = "Content-Type: multipart/mixed".freeze
       MIMETYPES = %w(multipart/mixed).freeze
 
       attr_accessor :formatters
