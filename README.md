@@ -1,9 +1,11 @@
+[![Build Status](https://travis-ci.org/packethost/userdata-rb.svg)](https://travis-ci.org/packethost/userdata-rb) ![](https://img.shields.io/badge/Stability-Experimental-red.svg)
+
 CloudInit Userdata
 ==================
 
 A Ruby client for parsing and validating CloudInit userdata.
 
-[![Build Status](https://travis-ci.org/packethost/userdata-rb.svg)](https://travis-ci.org/packethost/userdata-rb)
+This repository is [Experimental](https://github.com/packethost/standards/blob/master/experimental-statement.md) meaning that it's based on untested ideas or techniques and not yet established or finalized or involves a radically new and innovative style! This means that support is best effort (at best!) and we strongly encourage you to NOT use this in production.
 
 Usage
 -----
