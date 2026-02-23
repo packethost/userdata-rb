@@ -1,5 +1,8 @@
 [![Build Status](https://travis-ci.org/packethost/userdata-rb.svg)](https://travis-ci.org/packethost/userdata-rb) ![](https://img.shields.io/badge/Stability-Experimental-red.svg)
 
+> [!WARNING]
+> With the upcoming EoL of Equinix Metal on June 30, 2026, this repo is being archived on July 1, 2026.
+
 CloudInit Userdata
 ==================
 
